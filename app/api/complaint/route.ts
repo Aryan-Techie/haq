@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     if (!text) return Response.json({ error: "empty" }, { status: 502 });
 
     const draft = JSON.parse(text) as ComplaintDraft;
-    return Response.json({ draft });
+    return Response.json({ draft, esHits });
   } catch (err) {
     console.error("[/api/complaint] generation failed:", err);
     return Response.json({ error: "generic" }, { status: 500 });

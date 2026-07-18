@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { t } from "./i18n";
-import type { ChatMessage, Lang, Source, WireMessage } from "./types";
+import type { ChatMessage, EsHit, Lang, Source, WireMessage } from "./types";
 import type { PreparedImage } from "./image";
 
 function uid(): string {
