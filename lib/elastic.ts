@@ -89,21 +89,18 @@ export async function searchKnowledge(
   try {
     const result = await client.search<HaqDocument>({
       index: ELASTIC_INDEX,
-      body: {
-        query: {
-          multi_match: {
-            query,
-            fields: [
-              "title^3",    // title matches are worth 3×
-              "content^2",  // content 2×
-              "tags",       // tag matches are 1×
-            ],
-            type: "best_fields",
-            fuzziness: "AUTO",
-          },
+      size,
+      query: {
+        multi_match: {
+          query,
+          fields: [
+            "title^3",
+            "content^2",
+            "tags",
+          ],
+          type: "best_fields",
+          fuzziness: "AUTO",
         },
-        size,
-        _source: true,
       },
     });
 
@@ -118,6 +115,7 @@ export async function searchKnowledge(
     return [];
   }
 }
+
 
 // ─── Context Formatter ───────────────────────────────────────────────────────
 
