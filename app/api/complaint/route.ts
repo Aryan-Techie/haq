@@ -2,7 +2,7 @@ import { getClient, MODEL } from "@/lib/gemini";
 import { buildComplaintSystemPrompt } from "@/lib/systemPrompt";
 import { searchKnowledge, formatESContext } from "@/lib/elastic";
 import { complaintSchema } from "@/lib/schemas";
-import type { ComplaintDraft, Lang } from "@/lib/types";
+import type { ComplaintDraft, EsHit, Lang } from "@/lib/types";
 
 
 export const runtime = "nodejs";

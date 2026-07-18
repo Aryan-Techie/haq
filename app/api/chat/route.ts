@@ -2,7 +2,7 @@ import { getClient, MODEL, GROUNDING_ENABLED, toContents } from "@/lib/gemini";
 import { buildSystemPrompt } from "@/lib/systemPrompt";
 import { searchKnowledge, formatESContext } from "@/lib/elastic";
 import type { GenerateContentConfig } from "@google/genai";
-import type { Lang, Source, WireMessage } from "@/lib/types";
+import type { EsHit, Lang, Source, WireMessage } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -41,6 +41,7 @@ export async function POST(request: Request) {
   const lastUserText = [...messages].reverse().find((m) => m.role === "user")?.text ?? "";
   const esDocs = await searchKnowledge(lastUserText, lang);
   const esContext = formatESContext(esDocs);
+  const esHits: EsHit[] = esDocs.map((d) => ({ type: d.type, title: d.title, url: d.url }));
 
   const systemInstruction = buildSystemPrompt(lang, esContext || undefined);
 
@@ -101,6 +102,7 @@ export async function POST(request: Request) {
             t: "meta",
             sources: Array.from(seen.values()),
             searchSuggestionsHtml,
+            esHits,
           })
         );
       } catch (err) {

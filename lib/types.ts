@@ -8,6 +8,13 @@ export interface Source {
   domain?: string;
 }
 
+/** A document retrieved from the Elasticsearch "haq-knowledge" index for this request. */
+export interface EsHit {
+  type: string;
+  title: string;
+  url?: string;
+}
+
 /** An image the worker attached (base64, no data: prefix). */
 export interface Attachment {
   mime: string;
@@ -24,6 +31,8 @@ export interface ChatMessage {
   attachments?: Attachment[];
   /** Grounded web sources (from Gemini groundingMetadata). */
   sources?: Source[];
+  /** Documents Elasticsearch retrieved for this answer, if any. */
+  esHits?: EsHit[];
   /** Google Search Suggestions HTML (ToS-required render). */
   searchSuggestionsHtml?: string;
   /** true while the model is still streaming this message. */
