@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { t } from "./i18n";
 import type { ChatMessage, EsHit, Lang, Source, WireMessage } from "./types";
 import type { PreparedImage } from "./image";
@@ -14,7 +14,9 @@ export function useChat(lang: Lang) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [busy, setBusy] = useState(false);
   const messagesRef = useRef<ChatMessage[]>(messages);
-  messagesRef.current = messages;
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
   const abortRef = useRef<AbortController | null>(null);
 
   const patch = useCallback((id: string, updater: (m: ChatMessage) => ChatMessage) => {
@@ -103,7 +105,6 @@ export function useChat(lang: Lang) {
           }
         };
 
-        // eslint-disable-next-line no-constant-condition
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
