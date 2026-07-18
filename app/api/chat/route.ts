@@ -1,5 +1,6 @@
 import { getClient, MODEL, GROUNDING_ENABLED, toContents } from "@/lib/gemini";
 import { buildSystemPrompt } from "@/lib/systemPrompt";
+import { searchKnowledge, formatESContext } from "@/lib/elastic";
 import type { GenerateContentConfig } from "@google/genai";
 import type { Lang, Source, WireMessage } from "@/lib/types";
 

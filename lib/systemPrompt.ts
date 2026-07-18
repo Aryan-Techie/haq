@@ -23,8 +23,17 @@ const LANG_LINE: Record<Lang, string> = {
   en: "The user has chosen ENGLISH. Reply in simple, plain English. If the user writes in Hindi or Hinglish, mirror their language instead.",
 };
 
-/** Main grounded chat agent. */
-export function buildSystemPrompt(lang: Lang): string {
+/**
+ * Main grounded chat agent.
+ * @param lang       UI language chosen by the user
+ * @param esContext  Formatted Elasticsearch results (from lib/elastic.ts);
+ *                   injected above the baseline knowledge when available.
+ */
+export function buildSystemPrompt(lang: Lang, esContext?: string): string {
+  const esBlock = esContext
+    ? `\n\n${esContext}\n\n# END OF ELASTICSEARCH RESULTS\n`
+    : "";
+
   return `You are "Haq" (हक़), a calm and trustworthy assistant that helps workers in Delhi understand and claim their labour rights. You help daily-wage workers, migrant workers, construction workers, domestic and factory workers — many of whom have little formal schooling and little trust in officials.
 
 # How you speak
@@ -60,20 +69,29 @@ export function buildSystemPrompt(lang: Lang): string {
 
 # Honesty
 - You give information, not formal legal advice. Say so if the situation is serious, and point them to a labour office, legal-aid (DSLSA), or a union.
-
+${esBlock}
 ${knowledgeContext()}${learnedBlock()}`;
 }
 
-/** Structured complaint drafter (Call 2 — no grounding, JSON output). */
-export function buildComplaintSystemPrompt(lang: Lang): string {
+/**
+ * Structured complaint drafter (Call 2 — no grounding, JSON output).
+ * @param lang       UI language
+ * @param esContext  Elasticsearch-retrieved facts relevant to the issue type
+ */
+export function buildComplaintSystemPrompt(lang: Lang, esContext?: string): string {
   const language =
     lang === "hi"
       ? "Write ALL text fields in simple Hindi (Devanagari)."
       : "Write ALL text fields in simple, plain English.";
+
+  const esBlock = esContext
+    ? `\n\n# RETRIEVED LEGAL CONTEXT FROM ELASTICSEARCH\n${esContext}\n# END OF RETRIEVED CONTEXT\n`
+    : "";
+
   return `You draft formal labour complaints for workers in Delhi. Produce a clean, respectful, ready-to-submit complaint that an ordinary worker can print, sign, and hand in.
 
 ${language}
-
+${esBlock}
 Rules:
 - Address it to the correct authority. For wage / minimum-wage / termination issues, that is the Office of the Labour Commissioner, GNCT of Delhi (Shramik Helpline 155214). For construction-worker welfare, reference the Delhi Building & Other Construction Workers Welfare Board.
 - Cite the relevant law by name (e.g. Code on Wages, 2019; Employees' Compensation Act, 1923) where it fits naturally.
