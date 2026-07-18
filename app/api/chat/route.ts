@@ -33,7 +33,16 @@ export async function POST(request: Request) {
   }
 
   const contents = toContents(messages);
-  const systemInstruction = buildSystemPrompt(lang);
+
+  // ── Elasticsearch RAG ─────────────────────────────────────────────────────
+  // Extract the last user message text and search ES for relevant documents.
+  // Results are injected into the system prompt as high-priority context.
+  // Falls back to empty string (no-op) if ES is not configured or fails.
+  const lastUserText = [...messages].reverse().find((m) => m.role === "user")?.text ?? "";
+  const esDocs = await searchKnowledge(lastUserText, lang);
+  const esContext = formatESContext(esDocs);
+
+  const systemInstruction = buildSystemPrompt(lang, esContext || undefined);
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
