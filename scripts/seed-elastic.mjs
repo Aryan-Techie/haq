@@ -387,10 +387,11 @@ async function seed() {
   console.log(`📊  Index now contains ${count.count} documents total`);
 
   // 5. Test search
-  console.log("\n🔍  Test search: "minimum wage unskilled"");
+  console.log(`\n🔍  Test search: "minimum wage unskilled"`);
   const test = await client.search({
     index: INDEX,
-    body: { query: { multi_match: { query: "minimum wage unskilled", fields: ["title^3", "content^2", "tags"] } }, size: 2 },
+    size: 2,
+    query: { multi_match: { query: "minimum wage unskilled", fields: ["title^3", "content^2", "tags"] } },
   });
   test.hits.hits.forEach((h) => {
     console.log(`  → [${h._source.type}] ${h._source.title} (score: ${h._score?.toFixed(2)})`);
