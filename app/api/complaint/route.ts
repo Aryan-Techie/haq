@@ -46,6 +46,7 @@ export async function POST(request: Request) {
   const esQuery = [body.issue, body.details].filter(Boolean).join(" ");
   const esDocs = await searchKnowledge(esQuery, lang, 4);
   const esContext = formatESContext(esDocs);
+  const esHits: EsHit[] = esDocs.map((d) => ({ type: d.type, title: d.title, url: d.url }));
 
   try {
     const response = await client.models.generateContent({
