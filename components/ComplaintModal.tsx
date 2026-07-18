@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { FileText, Copy, Download, Check, RotateCcw, AlertTriangle, Phone } from "lucide-react";
 import Modal from "./Modal";
-import type { ComplaintDraft, Lang } from "@/lib/types";
+import ElasticChips from "./ElasticChips";
+import type { ComplaintDraft, EsHit, Lang } from "@/lib/types";
 import { t } from "@/lib/i18n";
 
 const ISSUE_EN: Record<string, string> = {
@@ -29,6 +30,7 @@ export default function ComplaintModal({ open, onClose, lang }: Props) {
   const [details, setDetails] = useState("");
   const [loading, setLoading] = useState(false);
   const [draft, setDraft] = useState<ComplaintDraft | null>(null);
+  const [esHits, setEsHits] = useState<EsHit[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -38,6 +40,7 @@ export default function ComplaintModal({ open, onClose, lang }: Props) {
   const generate = async () => {
     setLoading(true);
     setDraft(null);
+    setEsHits([]);
     setErr(null);
     try {
       const res = await fetch("/api/complaint", {
@@ -51,6 +54,7 @@ export default function ComplaintModal({ open, onClose, lang }: Props) {
       } else {
         const j = await res.json();
         setDraft(j.draft as ComplaintDraft);
+        setEsHits((j.esHits as EsHit[]) ?? []);
       }
     } catch {
       setErr("generic");
@@ -79,6 +83,7 @@ export default function ComplaintModal({ open, onClose, lang }: Props) {
 
   const reset = () => {
     setDraft(null);
+    setEsHits([]);
     setErr(null);
   };
 
@@ -187,6 +192,8 @@ export default function ComplaintModal({ open, onClose, lang }: Props) {
           </div>
 
           <p className="mt-3 text-xs text-muted">{draft.disclaimer}</p>
+
+          <ElasticChips hits={esHits} lang={lang} />
 
           <div className="mt-4 grid grid-cols-2 gap-3">
             <button type="button" onClick={copy} className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3 text-sm font-bold text-primary transition-colors hover:bg-surface-2 cursor-pointer">

@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Lang, ChatMessage } from "@/lib/types";
 import CitationChips from "./CitationChips";
+import ElasticChips from "./ElasticChips";
 import SearchSuggestions from "./SearchSuggestions";
 
 export default function AnswerBlock({
@@ -33,6 +34,9 @@ export default function AnswerBlock({
         )}
       </div>
 
+      {message.esHits && message.esHits.length > 0 && (
+        <ElasticChips hits={message.esHits} lang={lang} />
+      )}
       {message.sources && message.sources.length > 0 && (
         <CitationChips sources={message.sources} lang={lang} />
       )}

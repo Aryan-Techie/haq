@@ -82,13 +82,14 @@ export function useChat(lang: Lang) {
         const decoder = new TextDecoder();
         let buffer = "";
 
-        const handle = (obj: { t: string; v?: string; sources?: Source[]; searchSuggestionsHtml?: string }) => {
+        const handle = (obj: { t: string; v?: string; sources?: Source[]; esHits?: EsHit[]; searchSuggestionsHtml?: string }) => {
           if (obj.t === "text" && obj.v) {
             patch(botId, (m) => ({ ...m, text: m.text + obj.v }));
           } else if (obj.t === "meta") {
             patch(botId, (m) => ({
               ...m,
               sources: obj.sources,
+              esHits: obj.esHits,
               searchSuggestionsHtml: obj.searchSuggestionsHtml,
               streaming: false,
             }));

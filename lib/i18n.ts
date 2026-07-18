@@ -28,6 +28,7 @@ interface Strings {
   quickPrompts: QuickPrompt[];
   thinking: string;
   sources: string;
+  esRetrieved: string;
   langName: string;
   switchTo: string;
   // tools
@@ -126,6 +127,7 @@ const en: Strings = {
   ],
   thinking: "Finding the law and current facts…",
   sources: "Sources",
+  esRetrieved: "Retrieved from Elasticsearch",
   langName: "English",
   switchTo: "हिंदी",
   tools: "Tools",
@@ -236,6 +238,7 @@ const hi: Strings = {
   ],
   thinking: "कानून और ताज़ा जानकारी ढूँढ रहा हूँ…",
   sources: "स्रोत",
+  esRetrieved: "Elasticsearch से प्राप्त तथ्य",
   langName: "हिंदी",
   switchTo: "English",
   tools: "सुविधाएँ",
