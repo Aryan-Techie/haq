@@ -13,6 +13,7 @@
     "ralph": "node evals/ralph.mjs"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.4.2",
     "@google/genai": "^2.12.0",
     "lucide-react": "^1.25.0",
     "next": "16.2.10",
