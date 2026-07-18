@@ -1,7 +1,9 @@
 import { getClient, MODEL } from "@/lib/gemini";
 import { buildComplaintSystemPrompt } from "@/lib/systemPrompt";
+import { searchKnowledge, formatESContext } from "@/lib/elastic";
 import { complaintSchema } from "@/lib/schemas";
 import type { ComplaintDraft, Lang } from "@/lib/types";
+
 
 export const runtime = "nodejs";
 
@@ -39,17 +41,24 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
+  // ── Elasticsearch RAG ─────────────────────────────────────────────────────
+  // Search for documents relevant to the issue type for richer complaint context.
+  const esQuery = [body.issue, body.details].filter(Boolean).join(" ");
+  const esDocs = await searchKnowledge(esQuery, lang, 4);
+  const esContext = formatESContext(esDocs);
+
   try {
     const response = await client.models.generateContent({
       model: MODEL,
       contents: `Draft a formal labour complaint based on these details:\n\n${facts}`,
       config: {
-        systemInstruction: buildComplaintSystemPrompt(lang),
+        systemInstruction: buildComplaintSystemPrompt(lang, esContext || undefined),
         responseMimeType: "application/json",
         responseSchema: complaintSchema,
         temperature: 0.4,
       },
     });
+
 
     const text = response.text;
     if (!text) return Response.json({ error: "empty" }, { status: 502 });
