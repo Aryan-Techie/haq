@@ -20,48 +20,6 @@ Built for the **GDG Cloud New Delhi × Elastic "Build With AI" Buildathon** — 
 
 ---
 
-## Run it (for the person demoing)
-
-**Prerequisites:** Node.js 20+.
-
-```bash
-# 1. install
-npm install
-
-# 2. add a FREE Gemini key (no credit card) — https://aistudio.google.com/apikey
-#    open .env.local and paste it:
-#    GEMINI_API_KEY=your_key_here
-
-# 3. (recommended — this is the Elastic integration) add Elastic Cloud credentials
-#    to .env.local, then seed the knowledge index — see "Elasticsearch setup" below:
-#    ELASTICSEARCH_URL=...
-#    ELASTICSEARCH_API_KEY=...
-npm run seed
-
-# 4. run
-npm run dev
-# open http://localhost:3000
-```
-
-> After adding keys to `.env.local`, **restart `npm run dev`** (env vars load at startup).
-> Without any key the app still runs and shows a friendly "add a key" message — so it never crashes on stage. Without Elasticsearch configured, it silently falls back to the static knowledge core (see below).
-
-### Optional: zero-setup shareable link
-Deploy to **Vercel** (free): import the repo, set `GEMINI_API_KEY` in Project → Settings → Environment Variables, deploy. The teammate just opens the URL — nothing to install.
-
----
-
-## 2-minute demo script
-
-1. **Open the app** (defaults to Hindi). Read the tagline: *"अपने हक़ जानिए."*
-2. Tap the quick chip **"मुझे न्यूनतम मज़दूरी नहीं मिल रही"** → watch it stream a plain-Hindi answer that **cites the Code on Wages 2019**, states the Delhi minimum wage, and tells the worker to call **155214** / file a complaint. Have the server terminal visible (or `tail`ed) so the mentor can see the `[elastic] query="…" → N hits` log line firing live — that's the Elasticsearch retrieval happening in real time. If Google grounding is enabled, also point at the **source chips** underneath.
-3. Tap **"Check minimum wage"** → choose *Unskilled*, type what you're paid (e.g. `14000`) → it shows the **shortfall** and offers *"Ask the assistant what to do."*
-4. Tap **"Draft a complaint"** → pick *Unpaid wages*, add a couple of details → **Generate**. A formal letter appears addressed to the Labour Commissioner with documents + how to submit. **Download** it.
-5. Toggle **EN** → the whole UI and the agent switch to English.
-6. Close: *"No login, no data stored, runs on a free Gemini key — and it speaks the worker's language."*
-
----
-
 ## How it works
 
 ```
@@ -91,12 +49,6 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · `@google
 ## Data & sources
 Minimum-wage figures effective **1 April 2025** (Delhi Labour Department; revised each April/October with CPI-IW). e-Shram (eshram.gov.in, helpline 14434), Delhi BOCW Welfare Board (bocw.delhi.gov.in), Shramik Helpline 155214 (labour.delhi.gov.in). **This is information, not legal advice — confirm current rates from the cited source.**
 
-## How it maps to the judging criteria
-- **Real-world impact** — a genuinely underserved user (migrant/daily-wage workers), in their language, on questions that affect their livelihood.
-- **Data effort** — curated + sourced legal/wage/scheme knowledge base, indexed in Elasticsearch and retrieved via BM25 search on every request, refreshed live via Search grounding with citations.
-- **Actionability & security** — names the office, drafts the complaint, gives the helpline; server-side keys, no PII stored, urgent-situation routing to emergency numbers.
-- **Demo & storytelling** — one clear, emotional flow end to end.
-
 ## Elasticsearch setup
 ```bash
 # 1. Get a free Elastic Cloud deployment: https://cloud.elastic.co (14-day trial)
@@ -123,3 +75,20 @@ scripts/        seed-elastic.mjs — creates + upserts the "haq-knowledge" index
 
 ## Privacy
 No accounts. No database. Nothing the user types is stored. The Gemini API key is read only on the server (`.env.local`) and is never exposed to the browser.
+
+## Team
+
+Built by **Team**, under **[AROICE](https://aroice.in)**.
+
+| | |
+|---|---|
+| **Aryan Techie** (Aryan Jangra) | [GitHub](https://github.com/aryan-techie) · [LinkedIn](https://www.linkedin.com/in/aryantechie) |
+| **Shipra Porwal** | [LinkedIn](https://www.linkedin.com/in/shipra-porwal-61229a219/) | [GitHub](https://github.com/shiprapr)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [AROICE](https://aroice.in)**
+
+</div>
